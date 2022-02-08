@@ -4,6 +4,7 @@
 
 // https://getcssscan.com/css-box-shadow-examples
 $boxShadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+$border: 3px solid rgba(0, 0, 0, 0.5);
 
 //////////////////////////////////
 // HTML Classes
@@ -58,6 +59,7 @@ $green: rgb(61, 216, 61);
 $blue: rgb(0, 191, 255);
 $purple: rgb(161, 68, 173);
 $darkBlue: rgb(60, 60, 192);
+$black: rgb(27, 27, 27);
 
 .pink {
   background-color: $pink !important;
@@ -89,6 +91,10 @@ $darkBlue: rgb(60, 60, 192);
 
 .dark-blue {
   background-color: $darkBlue !important;
+}
+
+.black {
+  background-color: $black !important;
 }
 
 @function set-text-color($bg-color) {

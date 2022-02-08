@@ -15,11 +15,12 @@
     <title>Tetris</title>
   </head>
   <body>
+    <h1 id="title">tetris</h1>
     <div class="tetris-container">
       <div class="col col-1">
-        <div class="game-container">
+        <div class="info-container">
           <h2>HOLD</h1>
-          <div class="shape-container">
+          <div class="shape-container" id="holdContainer">
             <!-- Blue I Shape -->
             <div class="shape absolute-center hide">
               <div class="row">
@@ -43,7 +44,7 @@
               </div>
             </div>
             <!-- Orange L Shape -->
-            <div class="shape absolute-center">
+            <div class="shape absolute-center hide">
               <div class="row">
                 <div class="box"></div>
                 <div class="box"></div>
@@ -107,28 +108,29 @@
             </div>
           </div>
         </div>
-        <div class="game-container">
+        <div class="info-container">
           <h2>SCORE</h2>
-          <div class="info-container">
+          <div class="line-container">
             <span id="score" class="absolute-center">31</span>
           </div>
           <h2>LEVEL</h2>
-          <div class="info-container">
-            <span id="score" class="absolute-center">31</span>
+          <div class="line-container">
+            <span id="level" class="absolute-center">31</span>
           </div>
           <h2>LINES</h2>
-          <div class="info-container">
-            <span id="score" class="absolute-center">31</span>
+          <div class="line-container">
+            <span id="line" class="absolute-center">31</span>
           </div>
         </div>
       </div>
-      <div class="col col-2 tetris-game"><h1>col2</h1></div>
+      <div class="col col-2 tetris-game" id="tetris">TETRIS</div>
       <div class="col col-3">
-        <div class="game-container">
+        <div class="info-container">
           <h2>NEXT</h2>
-          <div class="next-container">
+          <div class="next-container" id="nextContainer">
             <div class="shape-container">
-              <div class="shape absolute-center">
+              <!-- Blue I Shape -->
+              <div class="shape absolute-center hide">
                 <div class="row">
                   <div class="box bordered blue"></div>
                   <div class="box bordered blue"></div>
@@ -136,9 +138,34 @@
                   <div class="box bordered blue"></div>
                 </div>
               </div>
-            </div>
-            <div class="shape-container">
-              <div class="shape absolute-center">
+              <!-- Dark blue J Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box bordered dark-blue"></div>
+                </div>
+              </div>
+              <!-- Orange L Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box"></div>
+                  <div class="box bordered orange"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered orange"></div>
+                  <div class="box bordered orange"></div>
+                  <div class="box bordered orange"></div>
+                </div>
+              </div>
+              <!-- Yellow O Shape -->
+              <div class="shape absolute-center hide">
                 <div class="row">
                   <div class="box bordered yellow"></div>
                   <div class="box bordered yellow"></div>
@@ -148,9 +175,21 @@
                   <div class="box bordered yellow"></div>
                 </div>
               </div>
-            </div>
-            <div class="shape-container">
-              <div class="shape absolute-center ">
+              <!-- Green S Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered green"></div>
+                  <div class="box bordered green"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered green"></div>
+                  <div class="box bordered green"></div>
+                  <div class="box"></div>
+                </div>
+              </div>
+              <!-- Purple T Shape -->
+              <div class="shape absolute-center hide">
                 <div class="row">
                   <div class="box"></div>
                   <div class="box bordered purple"></div>
@@ -160,6 +199,193 @@
                   <div class="box bordered purple"></div>
                   <div class="box bordered purple"></div>
                   <div class="box bordered purple"></div>
+                </div>
+              </div>
+              <!-- Red Z Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered red"></div>
+                  <div class="box bordered red"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered red"></div>
+                  <div class="box bordered red"></div>
+                </div>
+              </div>
+            </div>
+            <div class="shape-container">
+              <!-- Blue I Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered blue"></div>
+                  <div class="box bordered blue"></div>
+                  <div class="box bordered blue"></div>
+                  <div class="box bordered blue"></div>
+                </div>
+              </div>
+              <!-- Dark blue J Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box bordered dark-blue"></div>
+                </div>
+              </div>
+              <!-- Orange L Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box"></div>
+                  <div class="box bordered orange"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered orange"></div>
+                  <div class="box bordered orange"></div>
+                  <div class="box bordered orange"></div>
+                </div>
+              </div>
+              <!-- Yellow O Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered yellow"></div>
+                  <div class="box bordered yellow"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered yellow"></div>
+                  <div class="box bordered yellow"></div>
+                </div>
+              </div>
+              <!-- Green S Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered green"></div>
+                  <div class="box bordered green"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered green"></div>
+                  <div class="box bordered green"></div>
+                  <div class="box"></div>
+                </div>
+              </div>
+              <!-- Purple T Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered purple"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered purple"></div>
+                  <div class="box bordered purple"></div>
+                  <div class="box bordered purple"></div>
+                </div>
+              </div>
+              <!-- Red Z Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered red"></div>
+                  <div class="box bordered red"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered red"></div>
+                  <div class="box bordered red"></div>
+                </div>
+              </div>
+            </div>
+            <div class="shape-container">
+              <!-- Blue I Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered blue"></div>
+                  <div class="box bordered blue"></div>
+                  <div class="box bordered blue"></div>
+                  <div class="box bordered blue"></div>
+                </div>
+              </div>
+              <!-- Dark blue J Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box bordered dark-blue"></div>
+                  <div class="box bordered dark-blue"></div>
+                </div>
+              </div>
+              <!-- Orange L Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box"></div>
+                  <div class="box bordered orange"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered orange"></div>
+                  <div class="box bordered orange"></div>
+                  <div class="box bordered orange"></div>
+                </div>
+              </div>
+              <!-- Yellow O Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered yellow"></div>
+                  <div class="box bordered yellow"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered yellow"></div>
+                  <div class="box bordered yellow"></div>
+                </div>
+              </div>
+              <!-- Green S Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered green"></div>
+                  <div class="box bordered green"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered green"></div>
+                  <div class="box bordered green"></div>
+                  <div class="box"></div>
+                </div>
+              </div>
+              <!-- Purple T Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered purple"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box bordered purple"></div>
+                  <div class="box bordered purple"></div>
+                  <div class="box bordered purple"></div>
+                </div>
+              </div>
+              <!-- Red Z Shape -->
+              <div class="shape absolute-center hide">
+                <div class="row">
+                  <div class="box bordered red"></div>
+                  <div class="box bordered red"></div>
+                  <div class="box"></div>
+                </div>
+                <div class="row">
+                  <div class="box"></div>
+                  <div class="box bordered red"></div>
+                  <div class="box bordered red"></div>
                 </div>
               </div>
             </div>
