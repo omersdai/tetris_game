@@ -1,0 +1,166 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,700&display=swap");
+.hide {
+  display: none !important;
+}
+
+.col {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.pink {
+  background-color: #e4657a !important;
+}
+
+.red {
+  background-color: #ff2929 !important;
+}
+
+.orange {
+  background-color: #ffa600 !important;
+}
+
+.yellow {
+  background-color: yellow !important;
+}
+
+.green {
+  background-color: #3dd83d !important;
+}
+
+.blue {
+  background-color: deepskyblue !important;
+}
+
+.purple {
+  background-color: #a144ad !important;
+}
+
+.dark-blue {
+  background-color: #3c3cc0 !important;
+}
+
+.flex-center {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  list-style: none;
+}
+
+body {
+  font-family: 'Roboto', serif;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: steelblue;
+}
+
+.tetris-container {
+  margin: 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+}
+
+.tetris-container .col-1 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.tetris-container .box {
+  height: 30px;
+  width: 30px;
+}
+
+.tetris-container .bordered {
+  border: 4.28571px solid rgba(0, 0, 0, 0.5);
+}
+
+.tetris-container .game-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 5px;
+  background-color: #4726da;
+  color: #fff;
+  padding: 13px 20px;
+  border-radius: 15px;
+  border: 4.28571px solid rgba(0, 0, 0, 0.5);
+}
+
+.tetris-container .shape-container, .tetris-container .info-container, .tetris-container .next-container {
+  height: 90px;
+  width: 150px;
+  position: relative;
+  background-color: black;
+  border-radius: 5px;
+}
+
+.tetris-container .info-container {
+  height: 30px;
+}
+
+.tetris-container .next-container {
+  height: 270px;
+}
+/*# sourceMappingURL=style.css.map */

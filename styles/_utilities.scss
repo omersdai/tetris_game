@@ -1,0 +1,157 @@
+// @extend %flex-center;
+// @include set-background($color);
+// background: darken($primaryColor, 10%) lighten($primaryColor, 10%)
+
+// https://getcssscan.com/css-box-shadow-examples
+$boxShadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+//////////////////////////////////
+// HTML Classes
+//////////////////////////////////
+.hide {
+  display: none !important;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+%btn {
+  font-size: 15px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(95%);
+  }
+
+  &:hover {
+    filter: brightness(0.95);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+%input {
+  font-size: 23px;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+//////////////////////////////////
+// Colors
+//////////////////////////////////
+$pink: rgb(228, 101, 122);
+$red: rgb(255, 41, 41);
+$orange: rgb(255, 166, 0);
+$yellow: rgb(255, 255, 0);
+$green: rgb(61, 216, 61);
+$blue: rgb(0, 191, 255);
+$purple: rgb(161, 68, 173);
+$darkBlue: rgb(60, 60, 192);
+
+.pink {
+  background-color: $pink !important;
+}
+
+.red {
+  background-color: $red !important;
+}
+
+.orange {
+  background-color: $orange !important;
+}
+
+.yellow {
+  background-color: $yellow !important;
+}
+
+.green {
+  background-color: $green !important;
+}
+
+.blue {
+  background-color: $blue !important;
+}
+
+.purple {
+  background-color: $purple !important;
+}
+
+.dark-blue {
+  background-color: $darkBlue !important;
+}
+
+@function set-text-color($bg-color) {
+  @if (lightness($bg-color) > 55) {
+    @return #000;
+  } @else {
+    @return #fff;
+  }
+}
+
+// Set background & text color
+// @include set-background($color)
+@mixin set-background($color) {
+  background-color: $color;
+  color: set-text-color($color);
+}
+//////////////////////////////////
+// Positioning
+//////////////////////////////////
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+//////////////////////////////////
+// Change HTML Elements
+//////////////////////////////////
+// https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/
+%force-word-wrap {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+// Remove number input arrows/spinners
+// https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp
+%input-remove-arrows {
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+}

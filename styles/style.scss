@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,700&display=swap');
+@import './utilities';
+
+$primaryColor: steelblue;
+$boxSize: 30px;
+$border: ($boxSize / 7) solid rgba(0, 0, 0, 0.5);
+$tetrisBlack: black;
+$containerColor: rgb(71, 38, 218);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+body {
+  font-family: 'Roboto', serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: steelblue;
+}
+
+.tetris-container {
+  margin: 15px;
+  display: flex;
+  gap: 20px;
+
+  .col-1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .box {
+    height: $boxSize;
+    width: $boxSize;
+  }
+
+  .bordered {
+    border: $border;
+  }
+
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    @include set-background($containerColor);
+    padding: 13px 20px;
+    border-radius: 15px;
+    border: $border;
+  }
+
+  .shape-container {
+    height: $boxSize * 3;
+    width: $boxSize * 5;
+    position: relative;
+    background-color: $tetrisBlack;
+    border-radius: 5px;
+  }
+
+  .info-container {
+    @extend .shape-container;
+    height: $boxSize * 1;
+  }
+
+  .next-container {
+    @extend .shape-container;
+    height: $boxSize * 9;
+  }
+}
