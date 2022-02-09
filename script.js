@@ -28,8 +28,9 @@ const [
   'ArrowRight',
   'ArrowLeft',
   'ArrowDown',
-  'Space',
+  ' ',
   'ArrowUp',
+  'Control',
   'Shift',
   'Escape',
 ];
@@ -61,6 +62,16 @@ const shapeMap = {
   [RED]: 6,
 };
 
+const positionMap = {
+  [BLUE]: 2,
+  [DARK_BLUE]: 4,
+  [ORANGE]: 4,
+  [YELLOW]: 1,
+  [GREEN]: 2,
+  [PURPLE]: 4,
+  [RED]: 2,
+};
+
 const holdShape = [];
 const nextShapes = [[], [], []];
 const tick = 300;
@@ -84,7 +95,7 @@ function startGame() {
   level = 1;
   lines = 0;
   nextArr = [...generatePermutation(shapes), ...generatePermutation(shapes)];
-  //   nextArr = ['red', 'red', 'red'];
+  // nextArr = [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, DARK_BLUE];
   isPaused = false;
   tetris = [];
   for (let i = 0; i < rowCount + hiddrenRowCount; i++) {
@@ -100,7 +111,7 @@ function startGame() {
   spawnShape();
 
   dropInterval = null;
-  interval = setInterval(updateGame, tick);
+  // interval = setInterval(updateGame, tick);
 }
 
 function endGame() {
@@ -113,7 +124,6 @@ function updateGame() {
     // goDown();
   } else if (lockDelay-- === 0) {
     lockShape();
-    spawnShape();
   }
 }
 
@@ -149,6 +159,11 @@ function goDown(count = 1) {
   return true;
 }
 
+function hardDrop() {
+  while (goDown());
+  lockShape();
+}
+
 function lockShape() {
   for (coor of currShape.coordinates) {
     if (coor[0] < hiddrenRowCount) {
@@ -157,12 +172,13 @@ function lockShape() {
     }
     tetris[coor[0]][coor[1]] = currShape.color;
   }
+  spawnShape();
 }
 
 function spawnShape() {
   currShape = createShape(nextArr.pop());
   lockDelay = maxLockDelay;
-  if (nextArr.length === shapes.length)
+  if (nextArr.length <= shapes.length)
     nextArr = [...generatePermutation(shapes), ...nextArr];
 
   // Update next shapes
@@ -185,32 +201,185 @@ function keyDown(e) {
         dropInterval = setInterval(goDown, tick / 3);
       }
       break;
-    case MOVE_RIGHT:
-      moveShape(1);
+    case HARD_DROP:
+      hardDrop();
+      break;
+    case CLOCKWISE:
+      rotateShape();
+      break;
+    case COUNTER_CLOCKWISE:
+      rotateShape(-1);
       break;
   }
 }
 
 function keyUp(e) {
-  console.log(e.key);
   switch (e.key) {
-    case MOVE_RIGHT:
-      // moveShape(1);
-      break;
-    case MOVE_LEFT:
-      // moveShape(-1);
-      break;
     case DROP:
       clearInterval(dropInterval);
       dropInterval = null;
       break;
-    case MOVE_RIGHT:
-      //   moveShape(1);
-      break;
   }
 }
 
-function rotateShape(clockwise = true) {}
+function rotateShape(c = 1) {
+  eraseShape();
+
+  const coors = currShape.coordinates;
+
+  switch (currShape.color) {
+    case BLUE:
+      if (currShape.position === 0) {
+        currShape.coordinates = [
+          [coors[0][0] - 3 * c, coors[0][1] + 2 * c],
+          [coors[1][0] - 2 * c, coors[1][1] + 1 * c],
+          [coors[2][0] - 1 * c, coors[2][1]],
+          [coors[3][0], coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 1) {
+        currShape.coordinates = [
+          [coors[0][0] + 3 * c, coors[0][1] - 2 * c],
+          [coors[1][0] + 2 * c, coors[1][1] - 1 * c],
+          [coors[2][0] + 1 * c, coors[2][1]],
+          [coors[3][0], coors[3][1] + 1 * c],
+        ];
+      }
+
+      break;
+    case DARK_BLUE:
+      if (currShape.position === 0) {
+        currShape.coordinates = [
+          [coors[0][0] - 1 * c, coors[0][1] + 2 * c],
+          [coors[1][0] - 2 * c, coors[1][1] + 1 * c],
+          [coors[2][0] - 1 * c, coors[2][1]],
+          [coors[3][0], coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 1) {
+        currShape.coordinates = [
+          [coors[0][0] + 2 * c, coors[0][1]],
+          [coors[1][0] + 1 * c, coors[1][1] + 1 * c],
+          [coors[2][0], coors[2][1]],
+          [coors[3][0] - 1 * c, coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 2) {
+        currShape.coordinates = [
+          [coors[0][0], coors[0][1] - 1 * c],
+          [coors[1][0] + 1 * c, coors[1][1]],
+          [coors[2][0], coors[2][1] + 1 * c],
+          [coors[3][0] - 1 * c, coors[3][1] + 2 * c],
+        ];
+      } else if (currShape.position === 3) {
+        currShape.coordinates = [
+          [coors[0][0] - 1 * c, coors[0][1] - 1 * c],
+          [coors[1][0], coors[1][1] - 2 * c],
+          [coors[2][0] + 1 * c, coors[2][1] - 1 * c],
+          [coors[3][0] + 2 * c, coors[3][1]],
+        ];
+      }
+      break;
+    case ORANGE:
+      if (currShape.position === 0) {
+        currShape.coordinates = [
+          [coors[0][0] - 2 * c, coors[0][1] + 1 * c],
+          [coors[1][0] - 1 * c, coors[1][1]],
+          [coors[2][0] + 1 * c, coors[2][1]],
+          [coors[3][0], coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 1) {
+        currShape.coordinates = [
+          [coors[0][0] + 1 * c, coors[0][1] + 1 * c],
+          [coors[1][0], coors[1][1]],
+          [coors[2][0], coors[2][1] - 2 * c],
+          [coors[3][0] - 1 * c, coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 2) {
+        currShape.coordinates = [
+          [coors[0][0] + 1 * c, coors[0][1]],
+          [coors[1][0], coors[1][1] + 1 * c],
+          [coors[2][0] - 2 * c, coors[2][1] + 1 * c],
+          [coors[3][0] - 1 * c, coors[3][1] + 2 * c],
+        ];
+      } else if (currShape.position === 3) {
+        currShape.coordinates = [
+          [coors[0][0], coors[0][1] - 2 * c],
+          [coors[1][0] + 1 * c, coors[1][1] - 1 * c],
+          [coors[2][0] + 1 * c, coors[2][1] + 1 * c],
+          [coors[3][0] + 2 * c, coors[3][1]],
+        ];
+      }
+      break;
+    case YELLOW:
+      break;
+    case GREEN:
+      if (currShape.position === 0) {
+        currShape.coordinates = [
+          [coors[0][0] - 2 * c, coors[0][1] + 1 * c],
+          [coors[1][0], coors[1][1] + 1 * c],
+          [coors[2][0] - 1 * c, coors[2][1]],
+          [coors[3][0] + 1 * c, coors[3][1]],
+        ];
+      } else if (currShape.position === 1) {
+        currShape.coordinates = [
+          [coors[0][0] + 2 * c, coors[0][1] - 1 * c],
+          [coors[1][0], coors[1][1] - 1 * c],
+          [coors[2][0] + 1 * c, coors[2][1]],
+          [coors[3][0] - 1 * c, coors[3][1]],
+        ];
+      }
+      break;
+    case PURPLE:
+      if (currShape.position === 0) {
+        currShape.coordinates = [
+          [coors[0][0] - 2 * c, coors[0][1] + 1 * c],
+          [coors[1][0], coors[1][1] + 1 * c],
+          [coors[2][0] - 1 * c, coors[2][1]],
+          [coors[3][0], coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 1) {
+        currShape.coordinates = [
+          [coors[0][0] + 1 * c, coors[0][1] + 1 * c],
+          [coors[1][0] + 1 * c, coors[1][1] - 1 * c],
+          [coors[2][0], coors[2][1]],
+          [coors[3][0] - 1 * c, coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 2) {
+        currShape.coordinates = [
+          [coors[0][0] + 1 * c, coors[0][1] - 1 * c],
+          [coors[1][0] - 1 * c, coors[1][1] - 1 * c],
+          [coors[2][0], coors[2][1]],
+          [coors[3][0] - 1 * c, coors[3][1] + 1 * c],
+        ];
+      } else if (currShape.position === 3) {
+        currShape.coordinates = [
+          [coors[0][0], coors[0][1] - 1 * c],
+          [coors[1][0], coors[1][1] + 1 * c],
+          [coors[2][0] + 1 * c, coors[2][1]],
+          [coors[3][0] + 2 * c, coors[3][1] + 1 * c],
+        ];
+      }
+      break;
+    case RED:
+      if (currShape.position === 0) {
+        currShape.coordinates = [
+          [coors[0][0] - 1 * c, coors[0][1] + 2 * c],
+          [coors[1][0], coors[1][1] + 1 * c],
+          [coors[2][0] - 1 * c, coors[2][1]],
+          [coors[3][0], coors[3][1] - 1 * c],
+        ];
+      } else if (currShape.position === 1) {
+        currShape.coordinates = [
+          [coors[0][0] + 1 * c, coors[0][1] - 2 * c],
+          [coors[1][0], coors[1][1] - 1 * c],
+          [coors[2][0] + 1 * c, coors[2][1]],
+          [coors[3][0], coors[3][1] + 1 * c],
+        ];
+      }
+      break;
+  }
+  const positionCount = positionMap[currShape.color];
+  currShape.position = (currShape.position + positionCount + 1) % positionCount;
+  renderShape();
+}
 
 function createShape(color) {
   const start = hiddrenRowCount - 1; // the lowest row which is hidden
