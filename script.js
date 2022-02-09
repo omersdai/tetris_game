@@ -183,7 +183,6 @@ function keyDown(e) {
     case DROP:
       if (!dropInterval) {
         dropInterval = setInterval(goDown, tick / 3);
-        console.log('is dropping');
       }
       break;
     case MOVE_RIGHT:
@@ -204,7 +203,6 @@ function keyUp(e) {
     case DROP:
       clearInterval(dropInterval);
       dropInterval = null;
-      console.log('stopped dropping');
       break;
     case MOVE_RIGHT:
       //   moveShape(1);
@@ -212,88 +210,72 @@ function keyUp(e) {
   }
 }
 
-function createShape(shape) {
+function rotateShape(clockwise = true) {}
+
+function createShape(color) {
   const start = hiddrenRowCount - 1; // the lowest row which is hidden
   const middle = parseInt(colCount / 2); // middle column of the grid
-  switch (shape) {
+  const shape = { color, position: 0 };
+  switch (color) {
     case BLUE:
-      return {
-        color: shape,
-        coordinates: [
-          [start, middle - 2],
-          [start, middle - 1],
-          [start, middle],
-          [start, middle + 1],
-        ],
-      };
+      shape.coordinates = [
+        [start, middle - 2],
+        [start, middle - 1],
+        [start, middle],
+        [start, middle + 1],
+      ];
+
       break;
     case DARK_BLUE:
-      return {
-        color: shape,
-        coordinates: [
-          [start - 1, middle - 2],
-          [start, middle - 2],
-          [start, middle - 1],
-          [start, middle],
-        ],
-      };
+      shape.coordinates = [
+        [start - 1, middle - 2],
+        [start, middle - 2],
+        [start, middle - 1],
+        [start, middle],
+      ];
       break;
     case ORANGE:
-      return {
-        color: shape,
-        coordinates: [
-          [start, middle - 2],
-          [start, middle - 1],
-          [start - 1, middle],
-          [start, middle],
-        ],
-      };
+      shape.coordinates = [
+        [start, middle - 2],
+        [start, middle - 1],
+        [start - 1, middle],
+        [start, middle],
+      ];
       break;
     case YELLOW:
-      return {
-        color: shape,
-        coordinates: [
-          [start - 1, middle - 1],
-          [start, middle - 1],
-          [start - 1, middle],
-          [start, middle],
-        ],
-      };
+      shape.coordinates = [
+        [start - 1, middle - 1],
+        [start, middle - 1],
+        [start - 1, middle],
+        [start, middle],
+      ];
       break;
     case GREEN:
-      return {
-        color: shape,
-        coordinates: [
-          [start, middle - 2],
-          [start - 1, middle - 1],
-          [start, middle - 1],
-          [start - 1, middle],
-        ],
-      };
+      shape.coordinates = [
+        [start, middle - 2],
+        [start - 1, middle - 1],
+        [start, middle - 1],
+        [start - 1, middle],
+      ];
       break;
     case PURPLE:
-      return {
-        color: shape,
-        coordinates: [
-          [start, middle - 2],
-          [start - 1, middle - 1],
-          [start, middle - 1],
-          [start, middle],
-        ],
-      };
+      shape.coordinates = [
+        [start, middle - 2],
+        [start - 1, middle - 1],
+        [start, middle - 1],
+        [start, middle],
+      ];
       break;
     case RED:
-      return {
-        color: shape,
-        coordinates: [
-          [start - 1, middle - 2],
-          [start - 1, middle - 1],
-          [start, middle - 1],
-          [start, middle],
-        ],
-      };
+      shape.coordinates = [
+        [start - 1, middle - 2],
+        [start - 1, middle - 1],
+        [start, middle - 1],
+        [start, middle],
+      ];
       break;
   }
+  return shape;
 }
 
 function showShape(shapeContainer, shape = null) {
