@@ -13,6 +13,27 @@ const rowCount = 20;
 const tetrisGrid = []; // contains tetris HTML boxes
 const maxLockDelay = 3;
 
+// Actions
+
+const [
+  MOVE_RIGHT,
+  MOVE_LEFT,
+  DROP,
+  HARD_DROP,
+  CLOCKWISE,
+  COUNTER_CLOCKWISE,
+  HOLD,
+  PAUSE,
+] = [
+  'ArrowRight',
+  'ArrowLeft',
+  'ArrowDown',
+  'Space',
+  'ArrowUp',
+  'Shift',
+  'Escape',
+];
+
 // Points
 const singleClear = 100;
 const doubleClear = 300;
@@ -42,7 +63,7 @@ const shapeMap = {
 
 const holdShape = [];
 const nextShapes = [[], [], []];
-const tick = 200;
+const tick = 300;
 
 let hold;
 let score;
@@ -51,6 +72,7 @@ let lines;
 let nextArr;
 let isPaused;
 let tetris; // contains the colors of HTML boxes
+let dropInterval;
 let interval;
 
 let currShape;
@@ -73,8 +95,11 @@ function startGame() {
     tetris.push(arr);
   }
 
+  renderTetris(); // clear game grid
+
   spawnShape();
 
+  dropInterval = null;
   interval = setInterval(updateGame, tick);
 }
 
@@ -84,12 +109,25 @@ function endGame() {
 }
 
 function updateGame() {
-  if (!isGrounded()) {
-    goDown();
+  if (goDown()) {
+    // goDown();
   } else if (lockDelay-- === 0) {
     lockShape();
     spawnShape();
   }
+}
+
+function moveShape(count = 1) {
+  const newCoordinates = copyCoordinates(currShape.coordinates);
+  for (coor of newCoordinates) {
+    coor[1] += count;
+    if (coor[1] < 0 || colCount <= coor[1] || tetris[coor[0]][coor[1]])
+      return false;
+  }
+  eraseShape();
+  currShape.coordinates = newCoordinates;
+  renderShape();
+  return true;
 }
 
 function isGrounded() {
@@ -104,9 +142,11 @@ function isGrounded() {
 }
 
 function goDown(count = 1) {
+  if (isGrounded()) return false;
   eraseShape();
   currShape.coordinates.forEach((coordinate) => coordinate[0]++);
   renderShape();
+  return true;
 }
 
 function lockShape() {
@@ -128,6 +168,47 @@ function spawnShape() {
   // Update next shapes
   for (let i = 0; i < nextShapes.length; i++) {
     showShape(nextShapes[i], nextArr[nextArr.length - 1 - i]);
+  }
+}
+
+function keyDown(e) {
+  console.log(e.key);
+  switch (e.key) {
+    case MOVE_RIGHT:
+      moveShape(1);
+      break;
+    case MOVE_LEFT:
+      moveShape(-1);
+      break;
+    case DROP:
+      if (!dropInterval) {
+        dropInterval = setInterval(goDown, tick / 3);
+        console.log('is dropping');
+      }
+      break;
+    case MOVE_RIGHT:
+      moveShape(1);
+      break;
+  }
+}
+
+function keyUp(e) {
+  console.log(e.key);
+  switch (e.key) {
+    case MOVE_RIGHT:
+      // moveShape(1);
+      break;
+    case MOVE_LEFT:
+      // moveShape(-1);
+      break;
+    case DROP:
+      clearInterval(dropInterval);
+      dropInterval = null;
+      console.log('stopped dropping');
+      break;
+    case MOVE_RIGHT:
+      //   moveShape(1);
+      break;
   }
 }
 
@@ -282,6 +363,12 @@ function initializeGame() {
     );
 }
 
+function copyCoordinates(coordinates) {
+  const newCoordinates = [];
+  coordinates.forEach((coor) => newCoordinates.push([...coor]));
+  return newCoordinates;
+}
+
 function generatePermutation(arr) {
   return arr
     .map((value) => ({ value, sort: Math.random() }))
@@ -292,3 +379,6 @@ function generatePermutation(arr) {
 initializeGame();
 
 title.addEventListener('click', (e) => startGame());
+
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
