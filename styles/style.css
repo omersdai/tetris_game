@@ -170,4 +170,39 @@ body {
 .tetris-container .info-container {
   gap: 5px;
 }
+
+.tetris-container .ghost-blue {
+  border: 3px solid rgba(0, 191, 255, 0.8);
+  background-color: #1b1b1b;
+}
+
+.tetris-container .ghost-dark-blue {
+  border: 3px solid rgba(60, 60, 192, 0.8);
+  background-color: #1b1b1b;
+}
+
+.tetris-container .ghost-orange {
+  border: 3px solid rgba(255, 166, 0, 0.8);
+  background-color: #1b1b1b;
+}
+
+.tetris-container .ghost-yellow {
+  border: 3px solid rgba(255, 255, 0, 0.8);
+  background-color: #1b1b1b;
+}
+
+.tetris-container .ghost-green {
+  border: 3px solid rgba(61, 216, 61, 0.8);
+  background-color: #1b1b1b;
+}
+
+.tetris-container .ghost-purple {
+  border: 3px solid rgba(161, 68, 173, 0.8);
+  background-color: #1b1b1b;
+}
+
+.tetris-container .ghost-red {
+  border: 3px solid rgba(255, 41, 41, 0.8);
+  background-color: #1b1b1b;
+}
 /*# sourceMappingURL=style.css.map */

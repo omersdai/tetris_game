@@ -3,7 +3,9 @@
 
 $primaryColor: steelblue;
 $boxSize: 30px;
-$border: ($boxSize / 10) solid rgba(0, 0, 0, 0.5);
+$borderWidth: $boxSize/10;
+$alpha: 0.8;
+$border: $borderWidth solid rgba(0, 0, 0, 0.5);
 $containerColor: rgb(71, 38, 218);
 
 * {
@@ -74,5 +76,40 @@ body {
   .info-container {
     @extend .tetris-game;
     gap: 5px;
+  }
+
+  .ghost-blue {
+    border: $borderWidth solid rgba($color: $blue, $alpha: $alpha);
+    background-color: $black;
+  }
+
+  .ghost-dark-blue {
+    border: $borderWidth solid rgba($color: $darkBlue, $alpha: $alpha);
+    background-color: $black;
+  }
+
+  .ghost-orange {
+    border: $borderWidth solid rgba($color: $orange, $alpha: $alpha);
+    background-color: $black;
+  }
+
+  .ghost-yellow {
+    border: $borderWidth solid rgba($color: $yellow, $alpha: $alpha);
+    background-color: $black;
+  }
+
+  .ghost-green {
+    border: $borderWidth solid rgba($color: $green, $alpha: $alpha);
+    background-color: $black;
+  }
+
+  .ghost-purple {
+    border: $borderWidth solid rgba($color: $purple, $alpha: $alpha);
+    background-color: $black;
+  }
+
+  .ghost-red {
+    border: $borderWidth solid rgba($color: $red, $alpha: $alpha);
+    background-color: $black;
   }
 }

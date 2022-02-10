@@ -51,7 +51,19 @@ const [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED] = [
   'purple',
   'red',
 ];
+
+const ghostMap = {
+  [BLUE]: 'ghost-blue',
+  [DARK_BLUE]: 'ghost-dark-blue',
+  [ORANGE]: 'ghost-orange',
+  [YELLOW]: 'ghost-yellow',
+  [GREEN]: 'ghost-green',
+  [PURPLE]: 'ghost-purple',
+  [RED]: 'ghost-red',
+};
 const shapes = [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED];
+
+// Maps the indices of the shapes
 const shapeMap = {
   [BLUE]: 0,
   [DARK_BLUE]: 1,
@@ -62,6 +74,7 @@ const shapeMap = {
   [RED]: 6,
 };
 
+// Maps the number of positions each shape has
 const positionMap = {
   [BLUE]: 2,
   [DARK_BLUE]: 4,
@@ -87,6 +100,7 @@ let isPaused;
 let tetris; // contains the colors of HTML boxes
 
 let currShape;
+let ghostShape;
 let lockDelay;
 
 let dropInterval;
@@ -132,37 +146,35 @@ function updateGame() {
 
 function moveShape(colShift = 1) {
   if (!shapeFits(0, colShift)) return false;
-  eraseShape();
+  eraseShape(ghostShape);
+  eraseShape(currShape);
+
   shiftShape(0, colShift);
-  renderShape();
+
+  renderGhost();
+  renderShape(currShape);
   return true;
 }
 
-function isGrounded() {
-  for (coordinate of currShape.coordinates) {
-    if (
-      coordinate[0] === tetris.length - 1 ||
-      tetris[coordinate[0] + 1][coordinate[1]]
-    )
-      return true;
+function isGrounded(shape) {
+  for (coor of shape.coordinates) {
+    const row = coor[0] + 1;
+    if (row === tetris.length || tetris[row][coor[1]]) return true;
   }
   return false;
 }
 
 function goDown() {
-  if (isGrounded()) return false;
-  eraseShape();
+  if (isGrounded(currShape)) return false;
+  eraseShape(currShape);
   currShape.coordinates.forEach((coordinate) => coordinate[0]++);
-  renderShape();
+  renderShape(currShape);
   return true;
 }
 
-function hardDrop() {
-  while (goDown());
-  lockShape();
-}
-
 function lockShape() {
+  eraseShape(currShape);
+  currShape.coordinates = ghostShape.coordinates;
   for (coor of currShape.coordinates) {
     if (coor[0] < hiddrenRowCount) {
       endGame();
@@ -170,6 +182,8 @@ function lockShape() {
     }
     tetris[coor[0]][coor[1]] = currShape.color;
   }
+
+  renderShape(currShape);
   spawnShape();
 }
 
@@ -183,6 +197,14 @@ function spawnShape() {
   for (let i = 0; i < nextShapes.length; i++) {
     showShape(nextShapes[i], nextArr[nextArr.length - 1 - i]);
   }
+
+  if (shapeFits(1, 0)) {
+    shiftShape(1, 0);
+    if (shapeFits(1, 0)) shiftShape(1, 0);
+  }
+
+  renderGhost();
+  renderShape(currShape);
 }
 
 function keyDown(e) {
@@ -200,7 +222,7 @@ function keyDown(e) {
       }
       break;
     case HARD_DROP:
-      hardDrop();
+      lockShape();
       break;
     case CLOCKWISE:
       rotateShape();
@@ -221,7 +243,8 @@ function keyUp(e) {
 }
 
 function rotateShape(c = 1) {
-  eraseShape();
+  eraseShape(ghostShape);
+  eraseShape(currShape);
 
   const coors = currShape.coordinates;
   const positionCount = positionMap[currShape.color];
@@ -380,7 +403,8 @@ function rotateShape(c = 1) {
 
   currShape.position = (currShape.position + positionCount + c) % positionCount;
   adjustShape();
-  renderShape();
+  renderGhost();
+  renderShape(currShape);
 }
 
 function adjustShape() {
@@ -398,6 +422,8 @@ function adjustShape() {
     }
   }
   shiftShape(rowShift, colShift);
+  // To limit how many times the tetris block can go up
+  if (rowShift < 0) lockDelay--;
 }
 
 function shiftShape(rowShift, colShift) {
@@ -488,20 +514,32 @@ function showShape(shapeContainer, shape = null) {
   if (shape) shapeContainer[shapeMap[shape]].classList.remove('hide');
 }
 
-function eraseShape() {
-  currShape.coordinates.forEach(
+function eraseShape(shape) {
+  shape.coordinates.forEach(
     (coor) => (tetrisGrid[coor[0]][coor[1]].className = 'box bordered black')
   );
 }
 
-function renderShape() {
-  // Assumes currShape does not overlap with colored squares
-  currShape.coordinates.forEach(
+function renderShape(shape) {
+  // Assumes shape does not overlap with colored squares
+  shape.coordinates.forEach(
     (coor) =>
-      (tetrisGrid[coor[0]][
-        coor[1]
-      ].className = `box bordered ${currShape.color}`)
+      (tetrisGrid[coor[0]][coor[1]].className = `box bordered ${shape.color}`)
   );
+}
+
+function renderGhost() {
+  ghostShape = {
+    color: ghostMap[currShape.color],
+    // position: currShape.position,
+    coordinates: copyCoordinates(currShape.coordinates),
+  };
+
+  while (!isGrounded(ghostShape)) {
+    ghostShape.coordinates.forEach((coordinate) => coordinate[0]++);
+  }
+
+  renderShape(ghostShape);
 }
 
 function renderTetris() {
