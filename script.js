@@ -72,6 +72,8 @@ const positionMap = {
   [RED]: 2,
 };
 
+const shiftOrder = [1, -1, 2];
+
 const holdShape = [];
 const nextShapes = [[], [], []];
 const tick = 300;
@@ -83,19 +85,20 @@ let lines;
 let nextArr;
 let isPaused;
 let tetris; // contains the colors of HTML boxes
-let dropInterval;
-let interval;
 
 let currShape;
 let lockDelay;
+
+let dropInterval;
+let interval;
 
 function startGame() {
   hold = null;
   score = 0;
   level = 1;
   lines = 0;
-  nextArr = [...generatePermutation(shapes), ...generatePermutation(shapes)];
-  // nextArr = [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, DARK_BLUE];
+  // nextArr = [...generatePermutation(shapes), ...generatePermutation(shapes)];
+  nextArr = [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED].reverse();
   isPaused = false;
   tetris = [];
   for (let i = 0; i < rowCount + hiddrenRowCount; i++) {
@@ -127,15 +130,10 @@ function updateGame() {
   }
 }
 
-function moveShape(count = 1) {
-  const newCoordinates = copyCoordinates(currShape.coordinates);
-  for (coor of newCoordinates) {
-    coor[1] += count;
-    if (coor[1] < 0 || colCount <= coor[1] || tetris[coor[0]][coor[1]])
-      return false;
-  }
+function moveShape(colShift = 1) {
+  if (!shapeFits(0, colShift)) return false;
   eraseShape();
-  currShape.coordinates = newCoordinates;
+  shiftShape(0, colShift);
   renderShape();
   return true;
 }
@@ -151,7 +149,7 @@ function isGrounded() {
   return false;
 }
 
-function goDown(count = 1) {
+function goDown() {
   if (isGrounded()) return false;
   eraseShape();
   currShape.coordinates.forEach((coordinate) => coordinate[0]++);
@@ -226,17 +224,20 @@ function rotateShape(c = 1) {
   eraseShape();
 
   const coors = currShape.coordinates;
+  const positionCount = positionMap[currShape.color];
+  const transition =
+    (currShape.position + positionCount + (c === 1 ? 0 : -1)) % positionCount;
 
   switch (currShape.color) {
     case BLUE:
-      if (currShape.position === 0) {
+      if (transition === 0) {
         currShape.coordinates = [
           [coors[0][0] - 3 * c, coors[0][1] + 2 * c],
           [coors[1][0] - 2 * c, coors[1][1] + 1 * c],
           [coors[2][0] - 1 * c, coors[2][1]],
           [coors[3][0], coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 1) {
+      } else if (transition === 1) {
         currShape.coordinates = [
           [coors[0][0] + 3 * c, coors[0][1] - 2 * c],
           [coors[1][0] + 2 * c, coors[1][1] - 1 * c],
@@ -247,28 +248,28 @@ function rotateShape(c = 1) {
 
       break;
     case DARK_BLUE:
-      if (currShape.position === 0) {
+      if (transition === 0) {
         currShape.coordinates = [
           [coors[0][0] - 1 * c, coors[0][1] + 2 * c],
           [coors[1][0] - 2 * c, coors[1][1] + 1 * c],
           [coors[2][0] - 1 * c, coors[2][1]],
           [coors[3][0], coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 1) {
+      } else if (transition === 1) {
         currShape.coordinates = [
           [coors[0][0] + 2 * c, coors[0][1]],
           [coors[1][0] + 1 * c, coors[1][1] + 1 * c],
           [coors[2][0], coors[2][1]],
           [coors[3][0] - 1 * c, coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 2) {
+      } else if (transition === 2) {
         currShape.coordinates = [
           [coors[0][0], coors[0][1] - 1 * c],
           [coors[1][0] + 1 * c, coors[1][1]],
           [coors[2][0], coors[2][1] + 1 * c],
           [coors[3][0] - 1 * c, coors[3][1] + 2 * c],
         ];
-      } else if (currShape.position === 3) {
+      } else if (transition === 3) {
         currShape.coordinates = [
           [coors[0][0] - 1 * c, coors[0][1] - 1 * c],
           [coors[1][0], coors[1][1] - 2 * c],
@@ -278,28 +279,28 @@ function rotateShape(c = 1) {
       }
       break;
     case ORANGE:
-      if (currShape.position === 0) {
+      if (transition === 0) {
         currShape.coordinates = [
           [coors[0][0] - 2 * c, coors[0][1] + 1 * c],
           [coors[1][0] - 1 * c, coors[1][1]],
           [coors[2][0] + 1 * c, coors[2][1]],
           [coors[3][0], coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 1) {
+      } else if (transition === 1) {
         currShape.coordinates = [
           [coors[0][0] + 1 * c, coors[0][1] + 1 * c],
           [coors[1][0], coors[1][1]],
           [coors[2][0], coors[2][1] - 2 * c],
           [coors[3][0] - 1 * c, coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 2) {
+      } else if (transition === 2) {
         currShape.coordinates = [
           [coors[0][0] + 1 * c, coors[0][1]],
           [coors[1][0], coors[1][1] + 1 * c],
           [coors[2][0] - 2 * c, coors[2][1] + 1 * c],
           [coors[3][0] - 1 * c, coors[3][1] + 2 * c],
         ];
-      } else if (currShape.position === 3) {
+      } else if (transition === 3) {
         currShape.coordinates = [
           [coors[0][0], coors[0][1] - 2 * c],
           [coors[1][0] + 1 * c, coors[1][1] - 1 * c],
@@ -311,14 +312,14 @@ function rotateShape(c = 1) {
     case YELLOW:
       break;
     case GREEN:
-      if (currShape.position === 0) {
+      if (transition === 0) {
         currShape.coordinates = [
           [coors[0][0] - 2 * c, coors[0][1] + 1 * c],
           [coors[1][0], coors[1][1] + 1 * c],
           [coors[2][0] - 1 * c, coors[2][1]],
           [coors[3][0] + 1 * c, coors[3][1]],
         ];
-      } else if (currShape.position === 1) {
+      } else if (transition === 1) {
         currShape.coordinates = [
           [coors[0][0] + 2 * c, coors[0][1] - 1 * c],
           [coors[1][0], coors[1][1] - 1 * c],
@@ -328,28 +329,28 @@ function rotateShape(c = 1) {
       }
       break;
     case PURPLE:
-      if (currShape.position === 0) {
+      if (transition === 0) {
         currShape.coordinates = [
           [coors[0][0] - 2 * c, coors[0][1] + 1 * c],
           [coors[1][0], coors[1][1] + 1 * c],
           [coors[2][0] - 1 * c, coors[2][1]],
           [coors[3][0], coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 1) {
+      } else if (transition === 1) {
         currShape.coordinates = [
           [coors[0][0] + 1 * c, coors[0][1] + 1 * c],
           [coors[1][0] + 1 * c, coors[1][1] - 1 * c],
           [coors[2][0], coors[2][1]],
           [coors[3][0] - 1 * c, coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 2) {
+      } else if (transition === 2) {
         currShape.coordinates = [
           [coors[0][0] + 1 * c, coors[0][1] - 1 * c],
           [coors[1][0] - 1 * c, coors[1][1] - 1 * c],
           [coors[2][0], coors[2][1]],
           [coors[3][0] - 1 * c, coors[3][1] + 1 * c],
         ];
-      } else if (currShape.position === 3) {
+      } else if (transition === 3) {
         currShape.coordinates = [
           [coors[0][0], coors[0][1] - 1 * c],
           [coors[1][0], coors[1][1] + 1 * c],
@@ -359,14 +360,14 @@ function rotateShape(c = 1) {
       }
       break;
     case RED:
-      if (currShape.position === 0) {
+      if (transition === 0) {
         currShape.coordinates = [
           [coors[0][0] - 1 * c, coors[0][1] + 2 * c],
           [coors[1][0], coors[1][1] + 1 * c],
           [coors[2][0] - 1 * c, coors[2][1]],
           [coors[3][0], coors[3][1] - 1 * c],
         ];
-      } else if (currShape.position === 1) {
+      } else if (transition === 1) {
         currShape.coordinates = [
           [coors[0][0] + 1 * c, coors[0][1] - 2 * c],
           [coors[1][0], coors[1][1] - 1 * c],
@@ -376,9 +377,44 @@ function rotateShape(c = 1) {
       }
       break;
   }
-  const positionCount = positionMap[currShape.color];
-  currShape.position = (currShape.position + positionCount + 1) % positionCount;
+
+  currShape.position = (currShape.position + positionCount + c) % positionCount;
+  adjustShape();
   renderShape();
+}
+
+function adjustShape() {
+  // Shift the shape right, left and up until it has space
+  let i = 0;
+  let rowShift = 0,
+    colShift = 0;
+  while (!shapeFits(rowShift, colShift)) {
+    if (i < shiftOrder.length) {
+      colShift = shiftOrder[i++];
+    } else {
+      i = 0;
+      rowShift--;
+      colShift = 0;
+    }
+  }
+  shiftShape(rowShift, colShift);
+}
+
+function shiftShape(rowShift, colShift) {
+  currShape.coordinates = currShape.coordinates.map((coor) => [
+    coor[0] + rowShift,
+    coor[1] + colShift,
+  ]);
+}
+
+function shapeFits(rowShift, colShift) {
+  // Checks left and right borders and occupied tetris squares
+  for (coor of currShape.coordinates) {
+    const row = coor[0] + rowShift,
+      col = coor[1] + colShift;
+    if (col < 0 || colCount <= col || tetris[row][col]) return false;
+  }
+  return true;
 }
 
 function createShape(color) {
