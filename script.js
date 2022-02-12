@@ -128,7 +128,7 @@ function startGame() {
   spawnShape();
 
   dropInterval = null;
-  // interval = setInterval(updateGame, tick);
+  interval = setInterval(updateGame, tick);
 }
 
 function endGame() {
@@ -157,7 +157,7 @@ function moveShape(colShift = 1) {
 }
 
 function isGrounded(shape) {
-  for (coor of shape.coordinates) {
+  for (const coor of shape.coordinates) {
     const row = coor[0] + 1;
     if (row === tetris.length || tetris[row][coor[1]]) return true;
   }
@@ -175,7 +175,7 @@ function goDown() {
 function lockShape() {
   eraseShape(currShape);
   currShape.coordinates = ghostShape.coordinates;
-  for (coor of currShape.coordinates) {
+  for (const coor of currShape.coordinates) {
     if (coor[0] < hiddrenRowCount) {
       endGame();
       return;
@@ -183,8 +183,43 @@ function lockShape() {
     tetris[coor[0]][coor[1]] = currShape.color;
   }
 
-  renderShape(currShape);
+  clearLines();
+  // renderShape(currShape);
+  renderTetris();
   spawnShape();
+}
+
+function clearLines() {
+  const rows = []; // unique row indices of the shape
+  let completeLines = 0;
+  for (const coor of currShape.coordinates) {
+    if (!rows.includes(coor[0])) rows.push(coor[0]);
+  }
+  rows.sort((num1, num2) => num2 - num1);
+
+  for (let j = 0; j < rows.length; j++) {
+    const row = tetris[rows[j] + completeLines];
+    let complete = true;
+    for (let i = 0; i < colCount; i++) {
+      if (!row[i]) {
+        complete = false;
+        break;
+      }
+    }
+    if (complete) {
+      completeLines++;
+      // Clear line
+      for (let i = 0; i < colCount; i++) {
+        row[i] = null;
+      }
+      // Move all other lines down by one
+      for (let i = rows[j] + completeLines - 1; 0 < i; i--) {
+        tetris[i] = tetris[i - 1];
+      }
+      tetris[0] = row;
+      console.log(tetris);
+    }
+  }
 }
 
 function spawnShape() {
@@ -435,7 +470,7 @@ function shiftShape(rowShift, colShift) {
 
 function shapeFits(rowShift, colShift) {
   // Checks left and right borders and occupied tetris squares
-  for (coor of currShape.coordinates) {
+  for (const coor of currShape.coordinates) {
     const row = coor[0] + rowShift,
       col = coor[1] + colShift;
     if (col < 0 || colCount <= col || tetris[row][col]) return false;
