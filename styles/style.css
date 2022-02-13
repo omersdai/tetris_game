@@ -205,4 +205,32 @@ body {
   border: 3px solid rgba(255, 41, 41, 0.8);
   background-color: #1b1b1b;
 }
+
+.text-red {
+  color: #ff2929;
+}
+
+.text-blue {
+  color: deepskyblue;
+}
+
+.text-green {
+  color: #3dd83d;
+}
+
+.text-yellow {
+  color: yellow;
+}
+
+.text-purple {
+  color: #a144ad;
+}
+
+.text-orange {
+  color: #ffa600;
+}
+
+.text-red {
+  color: #ff2929;
+}
 /*# sourceMappingURL=style.css.map */

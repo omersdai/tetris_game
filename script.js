@@ -42,12 +42,12 @@ const clearPoints = [0, 100, 300, 500, 800];
 const comboMultiplier = 1.5;
 const BEST_SCORE = 'tetrisBestScore';
 
-const maxLockDelay = 3;
+const maxLockDelay = 5;
 const maxTick = 1000;
-const minTick = 101;
+const minTick = 100;
 
-const levelChange = 10;
-const levelReduction = 100;
+const levelChange = 20;
+const levelReduction = 50;
 
 const [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED] = [
   'blue',
@@ -268,6 +268,7 @@ function spawnShape() {
 }
 
 function keyDown(e) {
+  e.preventDefault();
   switch (e.key) {
     case MOVE_RIGHT:
       moveShape(1);
