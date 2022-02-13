@@ -1,4 +1,5 @@
 const holdContainerEl = document.getElementById('holdContainer');
+const bestScoreEl = document.getElementById('bestScore');
 const scoreEl = document.getElementById('score');
 const levelEl = document.getElementById('level');
 const lineEl = document.getElementById('line');
@@ -11,7 +12,6 @@ const colCount = 10;
 const hiddrenRowCount = 4;
 const rowCount = 20;
 const tetrisGrid = []; // contains tetris HTML boxes
-const maxLockDelay = 3;
 
 // Actions
 const [
@@ -35,11 +35,16 @@ const [
 ];
 
 // Points
-const singleClear = 100;
-const doubleClear = 300;
-const tripleClear = 500;
-const tetrisClear = 800;
+const clearPoints = [0, 100, 300, 500, 800];
 const comboMultiplier = 1.5;
+const BEST_SCORE = 'tetrisBestScore';
+
+const maxLockDelay = 3;
+const maxTick = 1000;
+const minTick = 100;
+
+const levelChange = 10;
+const levelReduction = 100;
 
 const [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED] = [
   'blue',
@@ -88,14 +93,16 @@ const shiftOrder = [1, -1, 2];
 
 const holdContainer = [];
 const nextContainers = [[], [], []];
-const tick = 300;
 
 let holdColor;
 let score;
+let bestScore;
 let level;
 let lines;
 let nextArr;
 let isPaused;
+let isCombo;
+let tick;
 let tetris; // contains the colors of HTML boxes
 
 let currShape;
@@ -108,11 +115,14 @@ let interval;
 function startGame() {
   holdColor = null;
   score = 0;
+  bestScore = parseInt(localStorage.getItem(BEST_SCORE));
   level = 1;
   lines = 0;
-  // nextArr = [...generatePermutation(shapes), ...generatePermutation(shapes)];
+  nextArr = [...generatePermutation(shapes), ...generatePermutation(shapes)];
   nextArr = [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED].reverse();
   isPaused = false;
+  isCombo = false;
+  tick = maxTick;
   tetris = [];
   for (let i = 0; i < rowCount + hiddrenRowCount; i++) {
     const arr = [];
@@ -125,6 +135,11 @@ function startGame() {
   renderTetris(); // clear game grid
   showShape(holdContainer);
   spawnShape();
+
+  bestScoreEl.innerText = bestScore;
+  scoreEl.innerText = score;
+  levelEl.innerText = level + 1;
+  lineEl.innerText = lines;
 
   dropInterval = null;
   interval = setInterval(updateGame, tick);
@@ -218,6 +233,25 @@ function clearLines() {
       tetris[0] = row;
     }
   }
+  lines += completeLines;
+  score += clearPoints[completeLines] * (isCombo ? comboMultiplier : 1);
+  if (bestScore < score) {
+    bestScore = score;
+    bestScoreEl.innerText = bestScore;
+    localStorage.setItem(BEST_SCORE, bestScore);
+  }
+  level = parseInt(lines / levelChange);
+  const newTick = Math.max(minTick, maxTick - level * levelReduction);
+  if (tick !== newTick) {
+    tick = newTick;
+    clearInterval(interval);
+    interval = setInterval(updateGame, tick);
+  }
+  isCombo = 0 < completeLines;
+
+  scoreEl.innerText = score;
+  levelEl.innerText = level + 1;
+  lineEl.innerText = lines;
 }
 
 function spawnShape() {
@@ -646,6 +680,13 @@ function initializeGame() {
         .querySelectorAll('.shape')
         .forEach((shape) => nextContainers[idx].push(shape))
     );
+
+  if (!localStorage.getItem(BEST_SCORE)) localStorage.setItem(BEST_SCORE, '0');
+
+  bestScoreEl.innerText = localStorage.getItem(BEST_SCORE);
+  scoreEl.innerText = ' ';
+  levelEl.innerText = ' ';
+  lineEl.innerText = ' ';
 }
 
 function copyCoordinates(coordinates) {
