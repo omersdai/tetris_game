@@ -104,6 +104,20 @@ body {
   background-color: steelblue;
 }
 
+.game-title {
+  cursor: pointer;
+}
+
+.game-title:active {
+  -webkit-transform: scale(95%);
+          transform: scale(95%);
+}
+
+.game-title:hover {
+  -webkit-filter: brightness(0.95);
+          filter: brightness(0.95);
+}
+
 .tetris-container {
   margin: 15px;
   display: -webkit-box;
@@ -204,6 +218,16 @@ body {
 .tetris-container .ghost-red {
   border: 3px solid rgba(255, 41, 41, 0.8);
   background-color: #1b1b1b;
+}
+
+.how-to-play {
+  max-width: 540px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
 }
 
 .text-red {

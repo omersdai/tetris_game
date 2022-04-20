@@ -25,6 +25,17 @@ body {
   background-color: steelblue;
 }
 
+.game-title{
+  cursor: pointer;
+  &:active {
+    transform: scale(95%);
+  }
+
+  &:hover {
+    filter: brightness(0.95);
+  }
+}
+
 .tetris-container {
   margin: 15px;
   display: flex;
@@ -112,6 +123,15 @@ body {
     border: $borderWidth solid rgba($color: $red, $alpha: $alpha);
     background-color: $black;
   }
+}
+
+.how-to-play {
+  max-width: 540px;
+  text-align: center;
+  @include set-background(rgba($color: #000000, $alpha: 0.3));
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
 }
 
 .text-red {
