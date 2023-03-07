@@ -148,18 +148,26 @@ function startGame() {
   levelEl.innerText = level + 1;
   lineEl.innerText = lines;
   playBtn.innerText = "PAUSE";
+  playBtn.disabled = false;
+  resetBtn.disabled = false;
 
   dropInterval = null;
   interval = setInterval(updateGame, tick);
 }
 
 function endGame() {
-  clearInterval(interval);
   isGameOver = true;
-  console.log("game over");
+  playBtn.innerText = "PLAY";
+  clearInterval(interval);
+  resetBtn.disabled = true;
 }
 
 function togglePause() {
+  if (isGameOver) {
+    startGame();
+    return;
+  }
+
   isPaused = !isPaused;
   if (isPaused) {
     pauseGame();
@@ -169,7 +177,7 @@ function togglePause() {
 }
 
 function pauseGame() {
-  playBtn.innerText = "PLAY";
+  playBtn.innerText = "RESUME";
   clearInterval(interval);
   showShape(holdContainer, null); // hide hold
   nextContainers.forEach((nextContainer) => showShape(nextContainer, null)); // hide next
@@ -186,12 +194,12 @@ function unpauseGame() {
       playBtn.innerText = seconds;
     } else {
       clearInterval(pauseInterval);
+      playBtn.innerText = "PAUSE";
+      playBtn.disabled = false;
 
       showShape(holdContainer, holdColor);
       updateNextShapes();
 
-      playBtn.innerText = "PAUSE";
-      playBtn.disabled = false;
       renderTetris();
       renderGhost();
       renderShape(currShape);
@@ -699,6 +707,7 @@ function updateNextShapes() {
 }
 
 function initializeGame() {
+  isGameOver = true;
   populateTetrisGrid();
 
   holdContainerEl
@@ -767,4 +776,4 @@ title.addEventListener("click", (e) => {
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
 playBtn.addEventListener("click", togglePause);
-resetBtn.addEventListener("click", () => console.log("btn pressed!"));
+resetBtn.addEventListener("click", endGame);
