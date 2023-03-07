@@ -188,9 +188,7 @@ function unpauseGame() {
       clearInterval(pauseInterval);
 
       showShape(holdContainer, holdColor);
-      nextContainers.forEach((nextContainer, idx) =>
-        showShape(nextContainer, nextArr[nextArr.length - 1 - idx])
-      );
+      updateNextShapes();
 
       playBtn.innerText = "PAUSE";
       playBtn.disabled = false;
@@ -311,10 +309,7 @@ function spawnShape() {
   if (nextArr.length <= shapes.length)
     nextArr = [...generatePermutation(shapes), ...nextArr];
 
-  // Update next shapes
-  nextContainers.forEach((nextContainer, idx) =>
-    showShape(nextContainer, nextArr[nextArr.length - 1 - idx])
-  );
+  updateNextShapes();
 
   renderGhost();
   renderShape(currShape);
@@ -695,6 +690,12 @@ function clearTetris() {
       box.className = "box bordered black";
     }
   }
+}
+
+function updateNextShapes() {
+  nextContainers.forEach((nextContainer, idx) =>
+    showShape(nextContainer, nextArr[nextArr.length - 1 - idx])
+  );
 }
 
 function initializeGame() {
