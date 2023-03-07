@@ -28,6 +28,8 @@
 }
 .btn:disabled {
   cursor: default;
+  filter: brightness(0.8);
+  transform: none;
 }
 
 .pink {

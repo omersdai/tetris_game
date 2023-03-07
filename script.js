@@ -52,6 +52,8 @@ const minTick = 100;
 const levelChange = 20;
 const levelReduction = 50;
 
+const pauseSecondDelay = 3;
+
 const [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED] = [
   "blue",
   "dark-blue",
@@ -145,9 +147,10 @@ function startGame() {
   scoreEl.innerText = score;
   levelEl.innerText = level + 1;
   lineEl.innerText = lines;
+  playBtn.innerText = "PAUSE";
 
   dropInterval = null;
-  // interval = setInterval(updateGame, tick);
+  interval = setInterval(updateGame, tick);
 }
 
 function endGame() {
@@ -156,8 +159,47 @@ function endGame() {
   console.log("game over");
 }
 
+function togglePause() {
+  isPaused = !isPaused;
+  if (isPaused) {
+    pauseGame();
+  } else {
+    unpauseGame();
+  }
+}
+
 function pauseGame() {
-  console.log("pause is pressed!");
+  playBtn.innerText = "PLAY";
+  clearInterval(interval);
+  showShape(holdContainer, null); // hide hold
+  nextContainers.forEach((nextContainer) => showShape(nextContainer, null)); // hide next
+  clearTetris();
+}
+
+function unpauseGame() {
+  let seconds = pauseSecondDelay; // unpause after delay
+  playBtn.disabled = true;
+  playBtn.innerText = seconds;
+
+  let pauseInterval = setInterval(() => {
+    if (0 < --seconds) {
+      playBtn.innerText = seconds;
+    } else {
+      clearInterval(pauseInterval);
+
+      showShape(holdContainer, holdColor);
+      nextContainers.forEach((nextContainer, idx) =>
+        showShape(nextContainer, nextArr[nextArr.length - 1 - idx])
+      );
+
+      playBtn.innerText = "PAUSE";
+      playBtn.disabled = false;
+      renderTetris();
+      renderGhost();
+      renderShape(currShape);
+      interval = setInterval(updateGame, tick);
+    }
+  }, 1000);
 }
 
 function updateGame() {
@@ -165,7 +207,7 @@ function updateGame() {
     eraseShape(currShape);
     shiftShape(currShape, 1, 0);
     renderShape(currShape);
-  } else if (lockDelay-- <= 0) {
+  } else if (--lockDelay <= 0) {
     lockShape();
   }
 }
@@ -270,9 +312,9 @@ function spawnShape() {
     nextArr = [...generatePermutation(shapes), ...nextArr];
 
   // Update next shapes
-  for (let i = 0; i < nextContainers.length; i++) {
-    showShape(nextContainers[i], nextArr[nextArr.length - 1 - i]);
-  }
+  nextContainers.forEach((nextContainer, idx) =>
+    showShape(nextContainer, nextArr[nextArr.length - 1 - idx])
+  );
 
   renderGhost();
   renderShape(currShape);
@@ -484,20 +526,21 @@ function rotateShape(c = 1) {
 }
 
 function hold() {
-  const oldColor = currShape.color;
+  const { color, bottom, center } = currShape;
+
   eraseShape(currShape);
   eraseShape(ghostShape);
-  showShape(holdContainer, oldColor);
 
   if (!holdColor) {
     spawnShape();
   } else {
-    currShape = createShape(currShape.bottom, currShape.center, holdColor);
+    currShape = createShape(bottom, center, holdColor);
     adjustShape();
     renderGhost();
     renderShape(currShape);
   }
-  holdColor = oldColor;
+  holdColor = color;
+  showShape(holdContainer, holdColor);
 }
 
 function adjustShape() {
@@ -722,5 +765,5 @@ title.addEventListener("click", (e) => {
 
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
-playBtn.addEventListener("click", pauseGame);
+playBtn.addEventListener("click", togglePause);
 resetBtn.addEventListener("click", () => console.log("btn pressed!"));
