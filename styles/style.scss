@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,700&display=swap');
-@import './utilities';
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,700&display=swap");
+@import "./utilities";
 
 $primaryColor: steelblue;
 $boxSize: 30px;
-$borderWidth: $boxSize/10;
+$borderWidth: calc($boxSize / 10);
 $alpha: 0.8;
 $border: $borderWidth solid rgba(0, 0, 0, 0.5);
 $containerColor: rgb(71, 38, 218);
@@ -16,7 +16,7 @@ $containerColor: rgb(71, 38, 218);
 }
 
 body {
-  font-family: 'Roboto', serif;
+  font-family: "Roboto", serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,7 +25,11 @@ body {
   background-color: steelblue;
 }
 
-.game-title{
+.btn {
+  @extend %btn;
+}
+
+.game-title {
   cursor: pointer;
   &:active {
     transform: scale(95%);
@@ -87,6 +91,17 @@ body {
   .info-container {
     @extend .tetris-game;
     gap: 5px;
+  }
+
+  .game-buttons {
+    margin-top: 20px;
+    .btn {
+      @extend .flex-center;
+      margin: 8px 0px;
+      width: 100px;
+      background-color: $primaryColor;
+      color: white;
+    }
   }
 
   .ghost-blue {

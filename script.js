@@ -1,12 +1,15 @@
-const holdContainerEl = document.getElementById('holdContainer');
-const bestScoreEl = document.getElementById('bestScore');
-const scoreEl = document.getElementById('score');
-const levelEl = document.getElementById('level');
-const lineEl = document.getElementById('line');
-const nextContainerEl = document.getElementById('nextContainer');
-const tetrisEl = document.getElementById('tetris');
+const holdContainerEl = document.getElementById("holdContainer");
+const bestScoreEl = document.getElementById("bestScore");
+const scoreEl = document.getElementById("score");
+const levelEl = document.getElementById("level");
+const lineEl = document.getElementById("line");
+const nextContainerEl = document.getElementById("nextContainer");
+const tetrisEl = document.getElementById("tetris");
 
-const title = document.getElementById('title'); // this is temp, remove later
+const playBtn = document.getElementById("playBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+const title = document.getElementById("title"); // this is temp, remove later
 
 const holdContainer = [];
 const nextContainers = [[], [], []];
@@ -27,22 +30,22 @@ const [
   HOLD,
   PAUSE,
 ] = [
-  'ArrowRight',
-  'ArrowLeft',
-  'ArrowDown',
-  ' ',
-  'ArrowUp',
-  'Control',
-  'Shift',
-  'Escape',
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowDown",
+  " ",
+  "ArrowUp",
+  "Control",
+  "Shift",
+  "Escape",
 ];
 
 // Points
 const clearPoints = [0, 100, 300, 500, 800];
 const comboMultiplier = 1.5;
-const BEST_SCORE = 'tetrisBestScore';
+const BEST_SCORE = "tetrisBestScore";
 
-const maxLockDelay = 5;
+const maxLockDelay = 5; // number of times the shape can stay grounded without locking to its ground
 const maxTick = 1000;
 const minTick = 100;
 
@@ -50,23 +53,23 @@ const levelChange = 20;
 const levelReduction = 50;
 
 const [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED] = [
-  'blue',
-  'dark-blue',
-  'orange',
-  'yellow',
-  'green',
-  'purple',
-  'red',
+  "blue",
+  "dark-blue",
+  "orange",
+  "yellow",
+  "green",
+  "purple",
+  "red",
 ];
 
 const ghostMap = {
-  [BLUE]: 'ghost-blue',
-  [DARK_BLUE]: 'ghost-dark-blue',
-  [ORANGE]: 'ghost-orange',
-  [YELLOW]: 'ghost-yellow',
-  [GREEN]: 'ghost-green',
-  [PURPLE]: 'ghost-purple',
-  [RED]: 'ghost-red',
+  [BLUE]: "ghost-blue",
+  [DARK_BLUE]: "ghost-dark-blue",
+  [ORANGE]: "ghost-orange",
+  [YELLOW]: "ghost-yellow",
+  [GREEN]: "ghost-green",
+  [PURPLE]: "ghost-purple",
+  [RED]: "ghost-red",
 };
 const shapes = [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED];
 
@@ -101,15 +104,16 @@ let level;
 let lines;
 let nextArr;
 let isPaused;
+let isGameOver;
 let isCombo;
 let tick;
 let tetris; // contains the colors of HTML boxes
 
 let currShape;
 let ghostShape;
-let lockDelay;
+let lockDelay; // number of times the shape can stay grounded without locking to its ground
 
-let dropInterval;
+let dropInterval; // extra interval to drop the shape faster when user is pressing down
 let interval;
 
 function startGame() {
@@ -121,6 +125,7 @@ function startGame() {
   nextArr = [...generatePermutation(shapes), ...generatePermutation(shapes)];
   // nextArr = [BLUE, DARK_BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED].reverse();
   isPaused = false;
+  isGameOver = false;
   isCombo = false;
   tick = maxTick;
   tetris = [];
@@ -142,12 +147,17 @@ function startGame() {
   lineEl.innerText = lines;
 
   dropInterval = null;
-  interval = setInterval(updateGame, tick);
+  // interval = setInterval(updateGame, tick);
 }
 
 function endGame() {
   clearInterval(interval);
-  console.log('game over');
+  isGameOver = true;
+  console.log("game over");
+}
+
+function pauseGame() {
+  console.log("pause is pressed!");
 }
 
 function updateGame() {
@@ -182,12 +192,15 @@ function drop() {
 function lockShape() {
   eraseShape(currShape);
   currShape.coordinates = ghostShape.coordinates;
+  let isOverFlowing = false;
   for (const coor of currShape.coordinates) {
-    if (coor[0] < hiddrenRowCount) {
-      endGame();
-      return;
-    }
+    if (coor[0] < hiddrenRowCount) isOverFlowing = true;
     tetris[coor[0]][coor[1]] = currShape.color;
+  }
+
+  if (isOverFlowing) {
+    endGame();
+    return;
   }
 
   clearLines();
@@ -261,14 +274,13 @@ function spawnShape() {
     showShape(nextContainers[i], nextArr[nextArr.length - 1 - i]);
   }
 
-  if (shapeFits(currShape, 1, 0)) shiftShape(currShape, 1, 0);
-
   renderGhost();
   renderShape(currShape);
 }
 
 function keyDown(e) {
   e.preventDefault();
+  if (isGameOver) return;
   switch (e.key) {
     case MOVE_RIGHT:
       moveShape(1);
@@ -507,7 +519,7 @@ function adjustShape() {
   if (rowShift < 0) lockDelay--;
 }
 
-function shiftShape(shape, rowShift, colShift) {
+function shiftShape(shape, rowShift = 1, colShift = 0) {
   shape.bottom += rowShift;
   shape.center += colShift;
   shape.coordinates = shape.coordinates.map((coor) => [
@@ -516,7 +528,7 @@ function shiftShape(shape, rowShift, colShift) {
   ]);
 }
 
-function shapeFits(shape, rowShift, colShift) {
+function shapeFits(shape, rowShift = 1, colShift = 0) {
   // Checks left, right and bottom borders and occupied tetris squares
   for (const coor of shape.coordinates) {
     const row = coor[0] + rowShift,
@@ -591,13 +603,13 @@ function createShape(start, middle, color) {
 }
 
 function showShape(shapeContainer, color = null) {
-  shapeContainer.forEach((shape) => shape.classList.add('hide'));
-  if (color) shapeContainer[shapeMap[color]].classList.remove('hide');
+  shapeContainer.forEach((shape) => shape.classList.add("hide"));
+  if (color) shapeContainer[shapeMap[color]].classList.remove("hide");
 }
 
 function eraseShape(shape) {
   shape.coordinates.forEach(
-    (coor) => (tetrisGrid[coor[0]][coor[1]].className = 'box bordered black')
+    (coor) => (tetrisGrid[coor[0]][coor[1]].className = "box bordered black")
   );
 }
 
@@ -628,52 +640,64 @@ function renderTetris() {
     for (let j = 0; j < colCount; j++) {
       const box = tetrisGrid[i + hiddrenRowCount][j];
       const color = tetris[i + hiddrenRowCount][j];
-      box.className = `box bordered ${color ? color : 'black'}`;
+      box.className = `box bordered ${color ? color : "black"}`;
+    }
+  }
+}
+
+function clearTetris() {
+  for (let i = 0; i < rowCount; i++) {
+    for (let j = 0; j < colCount; j++) {
+      const box = tetrisGrid[i + hiddrenRowCount][j];
+      box.className = "box bordered black";
     }
   }
 }
 
 function initializeGame() {
-  // Populate tetris section
+  populateTetrisGrid();
+
+  holdContainerEl
+    .querySelectorAll(".shape")
+    .forEach((shape) => holdContainer.push(shape));
+  nextContainerEl
+    .querySelectorAll(".shape-container")
+    .forEach((container, idx) =>
+      container
+        .querySelectorAll(".shape")
+        .forEach((shape) => nextContainers[idx].push(shape))
+    );
+
+  if (!localStorage.getItem(BEST_SCORE)) localStorage.setItem(BEST_SCORE, "0");
+
+  bestScoreEl.innerText = localStorage.getItem(BEST_SCORE);
+  scoreEl.innerText = " ";
+  levelEl.innerText = " ";
+  lineEl.innerText = " ";
+}
+
+function populateTetrisGrid() {
   for (let i = 0; i < hiddrenRowCount; i++) {
     const arr = [];
     for (let j = 0; j < colCount; j++) {
-      const box = document.createElement('div');
+      const box = document.createElement("div");
       arr.push(box);
     }
     tetrisGrid.push(arr);
   }
   for (let i = 0; i < rowCount; i++) {
-    const row = document.createElement('div');
     const arr = [];
-    row.className = 'row';
+    const row = document.createElement("div");
+    row.className = "row";
     for (let j = 0; j < colCount; j++) {
-      const box = document.createElement('div');
-      box.className = 'box bordered black';
+      const box = document.createElement("div");
+      box.className = "box bordered black";
       arr.push(box);
       row.appendChild(box);
     }
     tetrisGrid.push(arr);
     tetrisEl.appendChild(row);
   }
-
-  holdContainerEl
-    .querySelectorAll('.shape')
-    .forEach((shape) => holdContainer.push(shape));
-  nextContainerEl
-    .querySelectorAll('.shape-container')
-    .forEach((container, idx) =>
-      container
-        .querySelectorAll('.shape')
-        .forEach((shape) => nextContainers[idx].push(shape))
-    );
-
-  if (!localStorage.getItem(BEST_SCORE)) localStorage.setItem(BEST_SCORE, '0');
-
-  bestScoreEl.innerText = localStorage.getItem(BEST_SCORE);
-  scoreEl.innerText = ' ';
-  levelEl.innerText = ' ';
-  lineEl.innerText = ' ';
 }
 
 function copyCoordinates(coordinates) {
@@ -691,10 +715,12 @@ function generatePermutation(arr) {
 
 initializeGame();
 
-title.addEventListener('click', (e) => {
+title.addEventListener("click", (e) => {
   endGame();
   startGame();
 });
 
-document.addEventListener('keydown', keyDown);
-document.addEventListener('keyup', keyUp);
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
+playBtn.addEventListener("click", pauseGame);
+resetBtn.addEventListener("click", () => console.log("btn pressed!"));

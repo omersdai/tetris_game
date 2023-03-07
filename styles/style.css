@@ -4,101 +4,93 @@
 }
 
 .col {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
 }
 
 .row {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  flex-direction: row;
+}
+
+.btn {
+  font-size: 15px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.btn:active {
+  transform: scale(95%);
+}
+.btn:hover {
+  filter: brightness(0.95);
+}
+.btn:disabled {
+  cursor: default;
 }
 
 .pink {
-  background-color: #e4657a !important;
+  background-color: rgb(228, 101, 122) !important;
 }
 
 .red {
-  background-color: #ff2929 !important;
+  background-color: rgb(255, 41, 41) !important;
 }
 
 .orange {
-  background-color: #ffa600 !important;
+  background-color: rgb(255, 166, 0) !important;
 }
 
 .yellow {
-  background-color: yellow !important;
+  background-color: rgb(255, 255, 0) !important;
 }
 
 .green {
-  background-color: #3dd83d !important;
+  background-color: rgb(61, 216, 61) !important;
 }
 
 .blue {
-  background-color: deepskyblue !important;
+  background-color: rgb(0, 191, 255) !important;
 }
 
 .purple {
-  background-color: #a144ad !important;
+  background-color: rgb(161, 68, 173) !important;
 }
 
 .dark-blue {
-  background-color: #3c3cc0 !important;
+  background-color: rgb(60, 60, 192) !important;
 }
 
 .black {
-  background-color: #1b1b1b !important;
+  background-color: rgb(27, 27, 27) !important;
 }
 
-.flex-center {
-  display: -webkit-box;
-  display: -ms-flexbox;
+.flex-center, .tetris-container .game-buttons .btn {
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .absolute-center {
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 * {
   margin: 0;
   padding: 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   list-style: none;
 }
 
 body {
-  font-family: 'Roboto', serif;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  font-family: "Roboto", serif;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  flex-direction: column;
+  align-items: center;
   min-height: 100vh;
   width: 100vw;
   background-color: steelblue;
@@ -107,117 +99,92 @@ body {
 .game-title {
   cursor: pointer;
 }
-
 .game-title:active {
-  -webkit-transform: scale(95%);
-          transform: scale(95%);
+  transform: scale(95%);
 }
-
 .game-title:hover {
-  -webkit-filter: brightness(0.95);
-          filter: brightness(0.95);
+  filter: brightness(0.95);
 }
 
 .tetris-container {
   margin: 15px;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   gap: 20px;
 }
-
 .tetris-container .col-1 {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
+  flex-direction: column;
+  justify-content: space-around;
 }
-
 .tetris-container .box {
   height: 30px;
   width: 30px;
 }
-
 .tetris-container .bordered {
   border: 3px solid rgba(0, 0, 0, 0.5);
 }
-
 .tetris-container .tetris-game, .tetris-container .info-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  background-color: #4726da;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(71, 38, 218);
   color: #fff;
   padding: 13px 20px;
   border-radius: 15px;
   border: 3px solid rgba(0, 0, 0, 0.5);
 }
-
-.tetris-container .shape-container, .tetris-container .line-container, .tetris-container .next-container {
+.tetris-container .shape-container, .tetris-container .next-container, .tetris-container .line-container {
   height: 90px;
   width: 150px;
   position: relative;
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
   border-radius: 5px;
 }
-
 .tetris-container .line-container {
   height: 30px;
 }
-
 .tetris-container .next-container {
   height: 270px;
 }
-
 .tetris-container .info-container {
   gap: 5px;
 }
-
+.tetris-container .game-buttons {
+  margin-top: 20px;
+}
+.tetris-container .game-buttons .btn {
+  margin: 8px 0px;
+  width: 100px;
+  background-color: steelblue;
+  color: white;
+}
 .tetris-container .ghost-blue {
   border: 3px solid rgba(0, 191, 255, 0.8);
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
 }
-
 .tetris-container .ghost-dark-blue {
   border: 3px solid rgba(60, 60, 192, 0.8);
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
 }
-
 .tetris-container .ghost-orange {
   border: 3px solid rgba(255, 166, 0, 0.8);
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
 }
-
 .tetris-container .ghost-yellow {
   border: 3px solid rgba(255, 255, 0, 0.8);
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
 }
-
 .tetris-container .ghost-green {
   border: 3px solid rgba(61, 216, 61, 0.8);
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
 }
-
 .tetris-container .ghost-purple {
   border: 3px solid rgba(161, 68, 173, 0.8);
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
 }
-
 .tetris-container .ghost-red {
   border: 3px solid rgba(255, 41, 41, 0.8);
-  background-color: #1b1b1b;
+  background-color: rgb(27, 27, 27);
 }
 
 .how-to-play {
@@ -231,30 +198,29 @@ body {
 }
 
 .text-red {
-  color: #ff2929;
+  color: rgb(255, 41, 41);
 }
 
 .text-blue {
-  color: deepskyblue;
+  color: rgb(0, 191, 255);
 }
 
 .text-green {
-  color: #3dd83d;
+  color: rgb(61, 216, 61);
 }
 
 .text-yellow {
-  color: yellow;
+  color: rgb(255, 255, 0);
 }
 
 .text-purple {
-  color: #a144ad;
+  color: rgb(161, 68, 173);
 }
 
 .text-orange {
-  color: #ffa600;
+  color: rgb(255, 166, 0);
 }
 
 .text-red {
-  color: #ff2929;
-}
-/*# sourceMappingURL=style.css.map */
+  color: rgb(255, 41, 41);
+}/*# sourceMappingURL=style.css.map */
